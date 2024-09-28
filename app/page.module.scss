@@ -6,12 +6,12 @@
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
 
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-items: center;
+  justify-items: flex-start;
   min-height: 100svh;
-  padding: 80px;
+  padding: 1em;
   gap: 64px;
   font-family: var(--font-geist-sans);
 }
@@ -32,13 +32,15 @@
   flex-direction: column;
   gap: 32px;
   grid-row-start: 2;
+  max-width: 100vw;
+  margin: 0 auto;
 }
 
 .main ol {
   font-family: var(--font-geist-mono);
   padding-left: 0;
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 24px;
   letter-spacing: -0.01em;
   list-style-position: inside;
@@ -73,7 +75,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 12px;
   line-height: 20px;
   font-weight: 500;
 }
@@ -142,7 +144,7 @@ a.secondary {
   }
 
   .ctas a {
-    font-size: 14px;
+    font-size: 12px;
     height: 40px;
     padding: 0 16px;
   }
@@ -158,8 +160,72 @@ a.secondary {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
+.tableContainer {
+  overflow-x: auto;
+  max-width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #262626;
+
+  th,
+  td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  td {
+    border: 1px solid #e0e0e0;
+  }
+}
+
+.emptyCell {
+  background-color: #000000;
+}
+
+.currentWeek {
+  background-color: #605500;
+}
+
+.stickyHeader,
+.stickyColumn {
+  position: sticky;
+  background-color: #153363;
+  z-index: 10;
+}
+
+.stickyHeader.currentWeek,
+.stickyColumn.currentWeek {
+  background-color: #757575;
+}
+
+.stickyHeader {
+  top: 0;
+}
+
+.stickyColumn:nth-child(1) {
+  left: 0;
+  z-index: 20;
+}
+
+.stickyColumn:nth-child(2) {
+  background-color: #484242;
+  left: 50px;
+  z-index: 20;
+}
+
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    padding: 8px 10px;
   }
 }
