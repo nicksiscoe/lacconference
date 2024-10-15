@@ -9,8 +9,15 @@ interface SheetData {
   currentWeekIndex: number;
 }
 
+interface TeamRecord {
+  team: string;
+  wins: number;
+  losses: number;
+}
+
 export default function Home() {
   const [sheetData, setSheetData] = useState<SheetData | null>(null);
+  const [standings, setStandings] = useState<TeamRecord[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -18,6 +25,7 @@ export default function Home() {
         const response = await fetch("/api/schedule");
         const data = await response.json();
         setSheetData(data);
+        calculateStandings(data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -26,12 +34,68 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const calculateStandings = (data: ScheduleData[][]) => {
+    const teamRecords: { [key: string]: TeamRecord } = {};
+
+    // Initialize team records
+    data.slice(1).forEach((row) => {
+      const team = row[1]?.value; // Team name is in the second column
+      if (team) {
+        teamRecords[team] = { team, wins: 0, losses: 0 };
+      }
+    });
+
+    // Count wins and losses
+    data.slice(1).forEach((row) => {
+      row.slice(2).forEach((cell) => {
+        if (cell.value && cell.played) {
+          const team = row[1].value;
+          if (!team) return;
+          if (cell.won) {
+            teamRecords[team].wins++;
+          } else {
+            teamRecords[team].losses++;
+          }
+        }
+      });
+    });
+
+    const sortedStandings = Object.values(teamRecords).sort(
+      (a, b) => b.wins - a.wins || a.losses - b.losses
+    );
+    setStandings(sortedStandings);
+  };
+
   if (!sheetData) return <div>Loading...</div>;
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <h1>Leahood Athletic Conference</h1>
+
+        <h2>Standings</h2>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th>Wins</th>
+                <th>Losses</th>
+              </tr>
+            </thead>
+            <tbody>
+              {standings.map((record, index) => (
+                <tr key={index}>
+                  <td>{record.team}</td>
+                  <td>{record.wins}</td>
+                  <td>{record.losses}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Schedule</h2>
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
