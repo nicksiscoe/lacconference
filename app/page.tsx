@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import styles from "./page.module.scss";
+import { ScheduleData } from "./types";
 
 interface SheetData {
-  data: string[][];
+  data: ScheduleData[][];
   currentWeekIndex: number;
 }
 
@@ -44,7 +45,7 @@ export default function Home() {
                         : ""
                     }`}
                   >
-                    {header}
+                    {header.value}
                   </th>
                 ))}
               </tr>
@@ -54,23 +55,34 @@ export default function Home() {
                 return (
                   <tr key={rowIndex}>
                     {sheetData.data[0].map((_, cellIndex) => {
-                      const cell = row[cellIndex];
+                      const cell = row.at(cellIndex);
+                      if (!cell) return null;
                       return cellIndex < 2 ? (
                         <th key={cellIndex} className={styles.stickyColumn}>
-                          {cell}
+                          {cell.value}
                         </th>
                       ) : (
                         <td
                           key={cellIndex}
                           className={`${
-                            !cell?.trim() ? styles.emptyCell : ""
+                            !cell.value?.trim() ? styles.emptyCell : ""
                           } ${
                             cellIndex === sheetData.currentWeekIndex
                               ? styles.currentWeek
                               : ""
                           }`}
+                          style={{
+                            backgroundColor: cell.played
+                              ? `rgb(${cell.backgroundColor.red * 255}, ${
+                                  cell.backgroundColor.green * 255
+                                }, ${cell.backgroundColor.blue * 255})`
+                              : undefined,
+                            color: cell.played ? "black" : "white",
+                            fontWeight: cell.played ? "bold" : "normal",
+                          }}
                         >
-                          {cell}
+                          {cell.value}
+                          {cell.played ? (cell.won ? " (W)" : " (L)") : ""}
                         </td>
                       );
                     })}
