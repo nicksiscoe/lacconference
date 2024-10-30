@@ -5,7 +5,7 @@ const SHEET_ID = process.env.SCHEDULE_SHEET_ID!;
 const SHEET_NAME = "SCHEDULE";
 const API_KEY = process.env.GOOGLE_API_KEY!;
 
-export const revalidate = 60 * 60 * 24; // 1 day
+export const revalidate = 0;
 
 const WHITE_CELL_COLOR = JSON.stringify({
   red: 1,

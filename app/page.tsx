@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import styles from "./page.module.scss";
 import { ScheduleData } from "./types";
 
+export const dynamic = "force-dynamic";
+
 interface SheetData {
   data: ScheduleData[][];
   currentWeekIndex: number;
@@ -81,16 +83,35 @@ export default function Home() {
                 <th>Team</th>
                 <th>Wins</th>
                 <th>Losses</th>
+                <th>Win %</th>
+                <th>Games Back</th>
               </tr>
             </thead>
             <tbody>
-              {standings.map((record, index) => (
-                <tr key={index}>
-                  <td>{record.team}</td>
-                  <td>{record.wins}</td>
-                  <td>{record.losses}</td>
-                </tr>
-              ))}
+              {standings.map((record, index) => {
+                const winPct =
+                  standings.length > 1
+                    ? (
+                        (record.wins / (record.wins + record.losses)) *
+                        100
+                      ).toFixed(1)
+                    : "100.0";
+                const gamesBack =
+                  standings.length > 1
+                    ? standings[0].wins - record.wins > 0
+                      ? (standings[0].wins - record.wins).toFixed(1)
+                      : "-"
+                    : "-";
+                return (
+                  <tr key={index}>
+                    <td>{record.team}</td>
+                    <td>{record.wins}</td>
+                    <td>{record.losses}</td>
+                    <td>{winPct}</td>
+                    <td>{gamesBack}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
