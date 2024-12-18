@@ -97,14 +97,12 @@ export async function GET() {
       );
       const nextSunday = new Date(today);
       nextSunday.setDate(today.getDate() + (7 - today.getDay()));
-      const followingSunday = new Date(nextSunday);
-      followingSunday.setDate(nextSunday.getDate() + 7);
-      return cellDate > nextSunday && cellDate <= followingSunday;
+      return cellDate <= nextSunday;
     });
 
     return NextResponse.json({
       data,
-      currentWeekIndex: weekIndex > 0 ? weekIndex - 1 : -1,
+      currentWeekIndex: weekIndex > 0 ? weekIndex : -1,
     });
   } catch (error) {
     console.error("Error fetching data:", error);
